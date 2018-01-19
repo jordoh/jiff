@@ -160,7 +160,7 @@ function lcsToJsonPatch(a1, a2, path, state, lcsMatrix) {
 		if (op === lcs.REMOVE) {
 			// Coalesce adjacent remove + add into replace
 			last = patch[patch.length-1];
-			context = state.makeContext(j, a1);
+			context = state.makeContext(j, a1, a2);
 
 			if(state.invertible) {
 				patch.push({ op: 'test', path: p, value: a1[j], context: context });
@@ -179,7 +179,7 @@ function lcsToJsonPatch(a1, a2, path, state, lcsMatrix) {
 			// See https://tools.ietf.org/html/rfc6902#section-4.1
 			// May use either index===length *or* '-' to indicate appending to array
 			patch.push({ op: 'add', path: p, value: a2[i],
-				context: state.makeContext(j, a1)
+				context: state.makeContext(j, a1, a2)
 			});
 
 			offset += 1;
