@@ -92,9 +92,20 @@ buster.testCase('commutePaths', {
 	},
 
 	'remove,replace -> replace,remove': {
-		'paths same length, remove lower index': function () {
+		'paths same length, at same index': function () {
 			var l = { op: 'remove', path: '/foo/1' };
 			var r = { op: 'replace', path: '/foo/1', value: 1 };
+
+			var rl = commutePaths(l, r);
+			assert.equals(rl[0].path, '/foo/2');
+			assert.equals(rl[1].path, '/foo/1');
+		},
+	},
+
+	'remove,test-> replace,test': {
+		'paths same length, at same index': function () {
+			var l = { op: 'remove', path: '/foo/1' };
+			var r = { op: 'test', path: '/foo/1', value: 1 };
 
 			var rl = commutePaths(l, r);
 			assert.equals(rl[0].path, '/foo/2');
