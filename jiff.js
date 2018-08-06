@@ -158,18 +158,24 @@ function lcsToJsonPatch(a1, a2, path, state, lcsMatrix) {
 		var p = path + '/' + (j + offset);
 
 		if (op === lcs.REMOVE) {
-			// Coalesce adjacent remove + add into replace
+			// Coalesce adjacent add + remove into replace
 			last = patch[patch.length-1];
 			context = state.makeContext(j, a1, a2);
 
-			if(state.invertible) {
-				patch.push({ op: 'test', path: p, value: a1[j], context: context });
-			}
+			if(last !== void 0 && last.op === 'add' && last.path === path + '/' + (j + offset - 1)) {
+				patch.pop();
 
-			if(last !== void 0 && last.op === 'add' && last.path === p) {
+				if(state.invertible) {
+					patch.push({ op: 'test', path: last.path, value: a1[j], context: context });
+				}
+
 				last.op = 'replace';
 				last.context = context;
+				patch.push(last);
 			} else {
+				if(state.invertible) {
+					patch.push({ op: 'test', path: p, value: a1[j], context: context });
+				}
 				patch.push({ op: 'remove', path: p, context: context });
 			}
 
