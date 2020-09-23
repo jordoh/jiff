@@ -155,6 +155,33 @@ buster.testCase('jiff', {
 				assert.equals(patch[0].op, 'replace');
 				assert.equals(b, jiff.patch(patch, a));
 			}
+		},
+
+		'on nested arrays of objects': {
+			'should generate add': function () {
+				var patch = jiff.diff(
+					{
+						content: [
+							{ type: 'a', content: [ 'one' ] },
+							{ type: 'a' },
+							{ type: 'a' },
+							{ type: 'a', content: [ 'two' ] }
+						]
+					},
+					{
+						content: [
+							{ type: 'a', content: [ 'one' ] },
+							{ type: 'a' },
+							{ type: 'a' },
+							{ type: 'a' },
+							{ type: 'a', content: [ 'two' ] }
+						]
+					},
+					{ invertible: false }
+				);
+				assert.equals(patch.length, 1);
+				assert.equals(patch[0].op, 'add');
+			}
 		}
 	}
 });
